@@ -18,13 +18,12 @@ function App() {
       // O seu ID de usuário (marcosmx8@gmail.com) é: 5a0fcdc3-04c9-4db4-9ab8-43b0e280296d
       const TEST_USER_ID = '5a0fcdc3-04c9-4db4-9ab8-43b0e280296d';
 
-      // 2. BUSCA O PERFIL NO BANCO DE DADOS
-      const { data, error } = await supabase
+      // DEPOIS (COM A CORREÇÃO)
+const { data, error } = await supabase
   .from('profiles')
-  .select('id, user_id, onboarding_concluido') // Adicionei user_id para a atualização funcionar
-  .eq('user_id', TEST_USER_ID)
-  .limit(1) // Pega no máximo 1 resultado
-  .single(); // Converte o array de 1 item em um único objeto
+  .select('id, onboarding_concluido') // Seleciona as colunas que precisamos
+  .eq('id', TEST_USER_ID) // <<< AQUI ESTÁ A CORREÇÃO: procurando na coluna 'id'
+  .single(); // Não precisamos mais do .limit(1) aqui, pois 'id' é único.
 
       if (error) {
         console.error('Erro ao buscar perfil do usuário:', error);
@@ -53,7 +52,7 @@ function App() {
     const { error } = await supabase
       .from('profiles')
       .update({ onboarding_concluido: true }) // Define a coluna como 'true'
-      .eq('user_id', userProfile.user_id); // Apenas para o nosso usuário
+      .eq('id', userProfile.id); // <<< CORREÇÃO: usando o 'id' do perfil para atualizar
 
     if (error) {
       console.error('Erro ao atualizar o status do onboarding:', error);
