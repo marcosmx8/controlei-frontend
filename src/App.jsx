@@ -20,10 +20,11 @@ function App() {
 
       // 2. BUSCA O PERFIL NO BANCO DE DADOS
       const { data, error } = await supabase
-        .from('profiles') // Nome da sua tabela
-        .select('id, onboarding_concluido') // Seleciona as colunas que precisamos
-        .eq('user_id', TEST_USER_ID) // Filtra pelo ID do usuário
-        .single(); // Esperamos apenas um resultado
+  .from('profiles')
+  .select('id, user_id, onboarding_concluido') // Adicionei user_id para a atualização funcionar
+  .eq('user_id', TEST_USER_ID)
+  .limit(1) // Pega no máximo 1 resultado
+  .single(); // Converte o array de 1 item em um único objeto
 
       if (error) {
         console.error('Erro ao buscar perfil do usuário:', error);
