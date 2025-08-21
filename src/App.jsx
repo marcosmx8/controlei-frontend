@@ -10,30 +10,33 @@ function App() {
 
   useEffect(() => {
     const fetchUserAndProfile = async () => {
-      // 1. PEGA A SESSÃO DO USUÁRIO LOGADO
-      const { data: { session }, error: sessionError } = await supabase.auth.getSession();
+      // ==================================================================
+      // INÍCIO DA MODIFICAÇÃO: Lendo o ID do usuário da URL
+      // ==================================================================
 
-      if (sessionError) {
-        console.error('Erro ao buscar sessão:', sessionError);
+      // Pega os parâmetros da URL (ex: ...?user_id=abc-123)
+      const urlParams = new URLSearchParams(window.location.search);
+      const userIdFromUrl = urlParams.get('user_id');
+
+      // Se nenhum ID foi passado na URL, o processo para aqui.
+      if (!userIdFromUrl) {
+        console.log("Nenhum ID de usuário foi fornecido na URL. O onboarding não pode iniciar.");
         return;
       }
 
-      // Se não houver sessão (ninguém logado), não faz nada.
-      if (!session) {
-        console.log('Nenhum usuário logado.');
-        return;
-      }
+      console.log("ID de usuário recebido da URL:", userIdFromUrl);
 
-      const user = session.user;
-      console.log('Usuário logado encontrado:', user);
-
-      // 2. BUSCA O PERFIL USANDO O ID DO USUÁRIO DA SESSÃO
+      // 2. BUSCA O PERFIL USANDO O ID RECEBIDO DA URL
       // A coluna 'user_id' na sua tabela 'profiles' deve corresponder ao 'id' da tabela 'auth.users'
       const { data: profileData, error: profileError } = await supabase
         .from('profiles')
         .select('id, user_id, onboarding_concluido')
-        .eq('user_id', user.id) // Usando o ID dinâmico do usuário logado
+        .eq('user_id', userIdFromUrl) // Usando o ID dinâmico da URL
         .single();
+
+      // ==================================================================
+      // FIM DA MODIFICAÇÃO
+      // ==================================================================
 
       if (profileError) {
         console.error('Erro ao buscar perfil do usuário:', profileError);
@@ -50,28 +53,31 @@ function App() {
         } else {
           console.log('Onboarding já concluído para este usuário.');
         }
+      } else {
+        console.log('Nenhum perfil encontrado para o ID fornecido.');
       }
     };
 
     fetchUserAndProfile();
   }, []);
 
-  // Função para ser chamada quando o tour terminar
+  // A função handleTourComplete continua a mesma, está correta.
   const handleTourComplete = async () => {
     setRunOnboarding(false);
 
     if (!userProfile) return;
 
-    // 4. ATUALIZA O BANCO DE DADOS USANDO O ID DO PERFIL
     const { error } = await supabase
       .from('profiles')
       .update({ onboarding_concluido: true })
-      .eq('id', userProfile.id); // Atualiza usando o ID da tabela 'profiles'
+      .eq('id', userProfile.id);
 
     if (error) {
       console.error('Erro ao atualizar o status do onboarding:', error);
     } else {
       console.log('Onboarding marcado como concluído no Supabase!');
+      // Opcional: fechar a janela automaticamente após a conclusão
+      // window.close();
     }
   };
 
