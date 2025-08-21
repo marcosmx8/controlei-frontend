@@ -1,0 +1,72 @@
+/* controlei-frontend/src/App.css */
+.App {
+  font-family: sans-serif;
+  text-align: center;
+}
+
+.app-header {
+  background-color: #f7f7f7;
+  padding: 20px;
+  border-bottom: 1px solid #ddd;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.botao-nova-transacao {
+  background-color: #6a1b9a;
+  color: white;
+  border: none;
+  padding: 10px 20px;
+  border-radius: 5px;
+  cursor: pointer;
+}
+
+.app-content {
+  display: flex;
+}
+
+.sidebar-menu {
+  width: 200px;
+  background-color: #f2f2f2;
+  padding: 20px;
+  height: 100vh;
+}
+
+.sidebar-menu ul {
+  list-style: none;
+  padding: 0;
+}
+
+.sidebar-menu li {
+  margin-bottom: 15px;
+  cursor: pointer;
+}
+
+.dashboard-cards {
+  display: flex;
+  gap: 20px;
+  padding: 40px;
+}
+
+.card {
+  background-color: #fff;
+  border: 1px solid #eee;
+  border-radius: 8px;
+  padding: 20px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  width: 200px;
+}
+/* Adicionar ao final de src/App.css */
+
+.header-actions {
+  display: flex;
+  align-items: center;
+  gap: 20px;
+}
+
+.notification-bell,
+.user-profile {
+  font-size: 24px;
+  cursor: pointer;
+}
